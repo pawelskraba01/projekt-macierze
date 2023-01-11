@@ -21,8 +21,9 @@ public:
     bool odwroc();
     int wyznacznik() const;
     // metoda do obliczania wyznacznika macierzy
+   
+    int stopien() const;
     
-
 
 private:
     // pola
@@ -30,6 +31,19 @@ private:
     int wiersze;
     int kolumny;
 };
+
+int macierz::stopien() const {
+    int stopien = 0;
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = 0; j < kolumny; j++) {
+            if (dane[i][j] != 0) {
+                stopien = max(stopien, i+j);
+            }
+        }
+    }
+    cout << "Stopień macierzy: " << stopien << endl;
+    return stopien;
+}
 
 
 
@@ -211,7 +225,9 @@ int main()
     m2.odwroc();
     cout << "Po odwrocie" << endl;
     m2.wypisz();
-
+ 
+ 
+ 
     
 
     return 0;
