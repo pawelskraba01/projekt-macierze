@@ -6,6 +6,9 @@ using namespace std;
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <fstream>
+
+
 
 class macierz {
 public:
@@ -14,6 +17,44 @@ public:
     
 
     macierz(int wiersze, int kolumny);
+
+    //fasada
+    // metoda importująca dane z pliku
+    void ImportujZPliku(const string &nazwaPliku) {
+        ifstream plik(nazwaPliku);
+        if (!plik.is_open()) {
+            cerr << "Nie udało się otworzyć pliku " << nazwaPliku << endl;
+            return;
+        }
+
+        for (int i = 0; i < wiersze; i++) {
+            for (int j = 0; j < kolumny; j++) {
+                plik >> dane[i][j];
+            }
+        }
+
+        plik.close();
+    }
+
+    // metoda eksportująca dane do pliku
+    void ExportujDoPliku(const string &nazwaPliku) {
+        ofstream plik(nazwaPliku);
+        if (!plik.is_open()) {
+            cerr << "Nie udało się otworzyć pliku " << nazwaPliku << endl;
+            return;
+        }
+
+        for (int i = 0; i < wiersze; i++) {
+            for (int j = 0; j < kolumny; j++) {
+                plik << dane[i][j] << " ";
+            }
+            plik << endl;
+        }
+
+        plik.close();
+    }
+
+
 
     // metody
     void wypisz();
@@ -210,25 +251,28 @@ void macierz::wypisz() {
         }
         cout << endl;
     }
+
 }
-    
 
 int main()
 {
-    macierz m2(3, 3);
-
-    
+    macierz m2(3, 3);   
     m2.wypisz();
 
    // int wyznacznik = m2.wyznacznik();
   //  cout << wyznacznik << endl;
-    m2.odwroc();
-    cout << "Po odwrocie" << endl;
+  //  m2.odwroc();
+  //  cout << "Po odwrocie" << endl;
+
+    m2.ImportujZPliku("test.txt");
     m2.wypisz();
  
  
- 
-    
+     macierz p(3,3);
+
+    // wypełnij macierz m danymi
+    p.ExportujDoPliku("macierzp.txt");
+    p.wypisz();
 
     return 0;
 }
