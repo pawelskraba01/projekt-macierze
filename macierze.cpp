@@ -298,42 +298,135 @@ void macierz::wypisz() {
 
 int main()
 {
-  //  macierz m2(3, 3);   
-  //  m2.wypisz();
+  
+    int wybor;
+    int liczbaMacierzy;
+    cout << "Ile macierzy chcesz utworzyc (minimum 2)?: ";
+    cin >> liczbaMacierzy;
 
-   // int wyznacznik = m2.wyznacznik();
-  //  cout << wyznacznik << endl;
-  //  m2.odwroc();
-  //  cout << "Po odwrocie" << endl;
+    if (liczbaMacierzy < 2) {
+        cout << "Musisz utworzyc conajmniej 2 macierze" << endl;
+        return 0;
+    }
+    vector<macierz> macierze;
+    for (int i = 0; i < liczbaMacierzy; i++) {
+        int wiersze, kolumny;
+        cout << "Podaj liczbe wierszy dla macierzy " << i + 1 << ": ";
+        cin >> wiersze;
+        cout << "Podaj liczbe kolumn dla macierzy " << i + 1 << ": ";
+        cin >> kolumny;
+        macierze.push_back(macierz(wiersze, kolumny));
+    }
 
-  //  m2.ImportujZPliku("test.txt");
-  //  m2.wypisz();
- 
- 
-   //  macierz p(3,3);
+    while(true) {
+        cout << "Wybierz opcje:" << endl;
+        cout << "1. Wypisz macierze" << endl;
+        cout << "2. Transponuj macierze" << endl;
+        cout << "3. Odwroc macierze" << endl;
+        cout << "4. Oblicz wyznacznik macierzy" << endl;
+        cout << "5. Oblicz stopien macierzy" << endl;
+        cout << "6. Dodaj macierze" << endl;
+        cout << "7. Odejmij macierze" << endl;
+        cout << "8. Importuj dane z pliku" << endl;
+        cout << "9. Exportuj dane do pliku" << endl;
+        cout << "10. Wyjdz z programu" << endl;
+        cin >> wybor;
 
-    // wypełnij macierz m danymi
-  //  p.ExportujDoPliku("macierzp.txt");
-  //  p.wypisz();
-
- macierz matrix(3,3);
- matrix.wypisz();
-
- cout << "\n" <<endl;
-
- macierz mat(3,3);
- matrix.wypisz();
-
- cout << "\n dodawanie wynik ponizej \n" <<endl;
-
- macierz m3 = matrix.Dodaj(mat);
- m3.wypisz();
-
- cout << "\n odejmowanie wynik ponizej \n" <<endl;
-
- macierz m4 = matrix.Odejmij(mat);
- m4.wypisz();
-
+        if (wybor == 1) {
+            for (int i = 0; i < liczbaMacierzy; i++) {
+                cout << "Macierz " << i + 1 << ":" << endl;
+                macierze[i].wypisz();
+                cout << endl;
+            }
+        } else if (wybor == 2) {
+            for (int i = 0; i < liczbaMacierzy; i++) {
+                cout << "Macierz " << i + 1 << " po transponowaniu:" << endl;
+                macierze[i].transponuj();
+                macierze[i].wypisz();
+                cout << endl;
+            }
+        } else if (wybor == 3) {
+            for (int i = 0; i < liczbaMacierzy; i++) {
+                if (macierze[i].odwroc()) {
+                    cout << "Macierz " << i + 1 << " po odwroceniu:" << endl;
+                    macierze[i].wypisz();
+                    cout << endl;
+                }
+               else {
+                    cout << "Macierz " << i + 1 << " jest nieodwracalna." << endl;
+}
+}
+} else if (wybor == 4) {
+for (int i = 0; i < liczbaMacierzy; i++) {
+cout << "Wyznacznik macierzy " << i + 1 << ": " << macierze[i].wyznacznik() << endl;
+}
+} else if (wybor == 5) {
+for (int i = 0; i < liczbaMacierzy; i++) {
+cout << "Stopien macierzy " << i + 1 << ": " << macierze[i].stopien() << endl;
+}
+} else if (wybor == 6) {
+int macierz1, macierz2;
+cout << "Wybierz pierwsza macierz do dodania (1-" << liczbaMacierzy << "): ";
+cin >> macierz1;
+cout << "Wybierz druga macierz do dodania (1-" << liczbaMacierzy << "): ";
+cin >> macierz2;
+if (macierz1 < 1 || macierz1 > liczbaMacierzy || macierz2 < 1 || macierz2 > liczbaMacierzy) {
+cout << "Nieprawidlowy wybor macierzy" << endl;
+continue;
+}
+macierz wynik = macierze[macierz1 - 1].Dodaj(macierze[macierz2 - 1]);
+cout << "Wynik dodawania:" << endl;
+wynik.wypisz();
+cout << endl;
+} else if (wybor == 7) {
+int macierz1, macierz2;
+cout << "Wybierz pierwsza macierz do odejmowania (1-" << liczbaMacierzy << "): ";
+cin >> macierz1;
+cout << "Wybierz druga macierz do odejmowania (1-" << liczbaMacierzy << "): ";
+cin >> macierz2;
+if (macierz1 < 1 || macierz1 > liczbaMacierzy || macierz2 < 1 || macierz2 > liczbaMacierzy) {
+cout << "Nieprawidlowy wybor macierzy" << endl;
+continue;
+}
+macierz wynik = macierze[macierz1 - 1].Odejmij(macierze[macierz2 - 1]);
+cout << "Wynik odejmowania:" << endl;
+wynik.wypisz();
+cout << endl;
+} else if (wybor == 8) {
+int macierz1;
+string nazwaPliku;
+cout << "Wybierz macierz, która ma zaimportować dane (1-" << liczbaMacierzy << "): ";
+cin >> macierz1;
+cout << "Podaj nazwę pliku do importu: ";
+cin >> nazwaPliku;
+if (macierz1 < 1 || macierz1 > liczbaMacierzy) {
+cout << "Nieprawidlowy wybor macierzy" << endl;
+continue;
+}
+macierze[macierz1 - 1].ImportujZPliku(nazwaPliku);
+cout << "Dane z pliku " << nazwaPliku << " zaimportowane do macierzy " << macierz1 << endl;
+} else if (wybor == 9) {
+            int macierz1;
+            string nazwaPliku;
+            cout << "Wybierz macierz, która ma zaimportować dane (1-" << liczbaMacierzy << "): ";
+            cin >> macierz1;
+            cout << "Podaj nazwę pliku do exportu (z rozszerzeniem .txt): ";
+            cin >> nazwaPliku;
+            if (macierz1 < 1 || macierz1 > liczbaMacierzy) {
+                cout << "Nieprawidlowy wybor macierzy" << endl;
+                continue;
+            }
+            if(nazwaPliku.find(".txt") == string::npos){
+                nazwaPliku += ".txt";
+            }
+            macierze[macierz1 - 1].ExportujDoPliku(nazwaPliku);
+            cout << "Dane z macierzy " << macierz1 << " zapisane do pliku " << nazwaPliku << endl;
+        } else if (wybor == 10) {
+break;
+} else {
+cout << "Nieprawidlowy wybor." << endl;
+}
+}
 
     return 0;
 }
