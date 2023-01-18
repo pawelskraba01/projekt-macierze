@@ -18,6 +18,11 @@ public:
 
     macierz(int wiersze, int kolumny);
 
+
+
+   
+
+
     //fasada
     // metoda importująca dane z pliku
     void ImportujZPliku(const string &nazwaPliku) {
@@ -64,7 +69,44 @@ public:
     // metoda do obliczania wyznacznika macierzy
    
     int stopien() const;
+
+
+
+ // metoda do dodawania macierzy
+    macierz Dodaj(const macierz& druga) {
+        if (wiersze != druga.wiersze || kolumny != druga.kolumny) {
+            cerr << "Macierze mają różne rozmiary." << endl;
+            return macierz(0,0);
+        }
+
+        macierz wynik(wiersze, kolumny);
+        for (int i = 0; i < wiersze; i++) {
+            for (int j = 0; j < kolumny; j++) {
+                wynik.dane[i][j] = dane[i][j] + druga.dane[i][j];
+            }
+        }
+
+        return wynik;
+    }   
+
+
+ // metoda do odejmowania macierzy
+    macierz Odejmij(const macierz& druga) {
+        if (wiersze != druga.wiersze || kolumny != druga.kolumny) {
+        cerr << "Macierze mają różne rozmiary." << endl;
+        return macierz(0,0);
+        }
     
+            macierz wynik(wiersze, kolumny);
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = 0; j < kolumny; j++) {
+            wynik.dane[i][j] = dane[i][j] - druga.dane[i][j];
+        }
+    }
+
+    return wynik;
+}
+
 
 private:
     // pola
@@ -256,23 +298,42 @@ void macierz::wypisz() {
 
 int main()
 {
-    macierz m2(3, 3);   
-    m2.wypisz();
+  //  macierz m2(3, 3);   
+  //  m2.wypisz();
 
    // int wyznacznik = m2.wyznacznik();
   //  cout << wyznacznik << endl;
   //  m2.odwroc();
   //  cout << "Po odwrocie" << endl;
 
-    m2.ImportujZPliku("test.txt");
-    m2.wypisz();
+  //  m2.ImportujZPliku("test.txt");
+  //  m2.wypisz();
  
  
-     macierz p(3,3);
+   //  macierz p(3,3);
 
     // wypełnij macierz m danymi
-    p.ExportujDoPliku("macierzp.txt");
-    p.wypisz();
+  //  p.ExportujDoPliku("macierzp.txt");
+  //  p.wypisz();
+
+ macierz matrix(3,3);
+ matrix.wypisz();
+
+ cout << "\n" <<endl;
+
+ macierz mat(3,3);
+ matrix.wypisz();
+
+ cout << "\n dodawanie wynik ponizej \n" <<endl;
+
+ macierz m3 = matrix.Dodaj(mat);
+ m3.wypisz();
+
+ cout << "\n odejmowanie wynik ponizej \n" <<endl;
+
+ macierz m4 = matrix.Odejmij(mat);
+ m4.wypisz();
+
 
     return 0;
 }
