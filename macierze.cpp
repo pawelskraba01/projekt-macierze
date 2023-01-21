@@ -14,173 +14,7 @@ class macierz {
 public:
     // konstruktor
 
-    
-
-    macierz(int wiersze, int kolumny);
-
-
-
-   
-
-
-    //fasada
-    // metoda importująca dane z pliku
-    void ImportujZPliku(const string &nazwaPliku) {
-        ifstream plik(nazwaPliku);
-        if (!plik.is_open()) {
-            cerr << "Nie udało się otworzyć pliku " << nazwaPliku << endl;
-            return;
-        }
-
-        for (int i = 0; i < wiersze; i++) {
-            for (int j = 0; j < kolumny; j++) {
-                plik >> dane[i][j];
-            }
-        }
-
-        plik.close();
-    }
-
-    // metoda eksportująca dane do pliku
-    void ExportujDoPliku(const string &nazwaPliku) {
-        ofstream plik(nazwaPliku);
-        if (!plik.is_open()) {
-            cerr << "Nie udało się otworzyć pliku " << nazwaPliku << endl;
-            return;
-        }
-
-        for (int i = 0; i < wiersze; i++) {
-            for (int j = 0; j < kolumny; j++) {
-                plik << dane[i][j] << " ";
-            }
-            plik << endl;
-        }
-
-        plik.close();
-    }
-
-
-
-    // metody
-    void wypisz();
-    void transponuj();
-    bool odwroc();
-    int wyznacznik() const;
-    // metoda do obliczania wyznacznika macierzy
-   
-    int stopien() const;
-
-
-
- // metoda do dodawania macierzy
-    macierz Dodaj(const macierz& druga) {
-        if (wiersze != druga.wiersze || kolumny != druga.kolumny) {
-            cerr << "Macierze mają różne rozmiary." << endl;
-            return macierz(0,0);
-        }
-
-        macierz wynik(wiersze, kolumny);
-        for (int i = 0; i < wiersze; i++) {
-            for (int j = 0; j < kolumny; j++) {
-                wynik.dane[i][j] = dane[i][j] + druga.dane[i][j];
-            }
-        }
-
-        return wynik;
-    }   
-
-
- // metoda do odejmowania macierzy
-    macierz Odejmij(const macierz& druga) {
-        if (wiersze != druga.wiersze || kolumny != druga.kolumny) {
-        cerr << "Macierze mają różne rozmiary." << endl;
-        return macierz(0,0);
-        }
-    
-            macierz wynik(wiersze, kolumny);
-    for (int i = 0; i < wiersze; i++) {
-        for (int j = 0; j < kolumny; j++) {
-            wynik.dane[i][j] = dane[i][j] - druga.dane[i][j];
-        }
-    }
-
-    return wynik;
-}
-
-
-private:
-    // pola
-    int** dane;
-    int wiersze;
-    int kolumny;
-};
-
-int macierz::stopien() const {
-    int stopien = 0;
-    for (int i = 0; i < wiersze; i++) {
-        for (int j = 0; j < kolumny; j++) {
-            if (dane[i][j] != 0) {
-                stopien = max(stopien, i+j);
-            }
-        }
-    }
-    cout << "Stopień macierzy: " << stopien << endl;
-    return stopien;
-}
-
-
-
-int macierz::wyznacznik() const {
-        // sprawdzamy, czy macierz jest kwadratowa
-        if (wiersze != kolumny) {
-            cerr << "Macierz nie jest kwadratowa." << endl;
-            return 0;
-        }
-
-        // obliczamy wyznacznik metodą Laplace'a
-        int det = 1;
-        for (int i = 0; i < wiersze; i++) {
-            // szukamy największego elementu w kolumnie i
-            int max_wiersz = i;
-            for (int j = i+1; j < wiersze; j++) {
-                if (abs(dane[j][i]) > abs(dane[max_wiersz][i])) {
-                    max_wiersz = j;
-                }
-            }
-
-            // jeśli największy element jest równy 0, to wyznacznik jest równy 0
-            if (dane[max_wiersz][i] == 0) {
-                return 0;
-            }
-
-            // zamieniamy wiersze, jeśli trzeba
-            if (max_wiersz != i) {
-                det *= -1;
-                swap(dane[i], dane[max_wiersz]);
-            }
-
-            // eliminujemy elementy poniżej i
-            for (int j = i+1; j < wiersze; j++) {
-                int f = dane[j][i] / dane[i][i];
-                for (int k = i; k < wiersze; k++) {
-                    dane[j][k] -= f * dane[i][k];
-                }
-            }
-        }
-
-        // mnożymy elementy na przekątnej
-        for (int i = 0; i < wiersze; i++) {
-            det *= dane[i][i];
-        }
-
-        return det;
-    }
-
-
-
-
-// implementacja konstruktora z parametrami
-macierz::macierz(int wiersze, int kolumny) {
+    macierz(int wiersze, int kolumny) {
     // tworzymy macierz o podanych wymiarach
     this->wiersze = wiersze;
     this->kolumny = kolumny;
@@ -201,8 +35,66 @@ macierz::macierz(int wiersze, int kolumny) {
 }
 
 
+    void DodajElement(int wiersz, int kolumna, int wartosc) {
 
-void macierz::transponuj() {
+        wiersz = wiersz-1;
+        kolumna = kolumna-1;
+
+    if (wiersz < 0 || wiersz >= wiersze || kolumna < 0 || kolumna >= kolumny) {
+        cerr << "Nieprawidłowy indeks elementu macierzy." << endl;
+        return;
+    }
+    int** temp = new int*[wiersze];
+    for(int i = 0; i<wiersze; i++)
+        temp[i] = new int[kolumny];
+
+    for(int i = 0; i<wiersze; i++)
+        for(int j = 0; j<kolumny; j++)
+            temp[i][j] = dane[i][j];
+
+    temp[wiersz][kolumna] += wartosc;
+
+    for(int i = 0; i<wiersze; i++)
+        delete[] dane[i];
+    delete[] dane;
+
+    dane = temp;
+}
+
+    void UsunElement(int wiersz, int kolumna) {
+    wiersz = wiersz-1;
+    kolumna = kolumna-1;
+    if (wiersz < 0 || wiersz >= wiersze || kolumna < 0 || kolumna >= kolumny) {
+        cerr << "Nieprawidłowy indeks elementu macierzy." << endl;
+        return;
+    }
+    int** temp = new int*[wiersze];
+    for(int i = 0; i < wiersze; i++)
+        temp[i] = new int[kolumny];
+
+    for(int i = 0; i < wiersze; i++)
+        for(int j = 0; j < kolumny; j++)
+            temp[i][j] = dane[i][j];
+
+    temp[wiersz][kolumna] = 0; //zamieniamy element na 0 oznaczający brak elmentu
+
+    for(int i = 0; i < wiersze; i++)
+        delete[] dane[i];
+    delete[] dane;
+
+    dane = temp;
+}
+
+
+    int ZwrocElement(int wiersz, int kolumna) {
+            if ((wiersz-1) < 0 || (wiersz-1) >= wiersze || (kolumna-1) < 0 || (kolumna-1) >= kolumny) {
+                cerr << "Nieprawidłowy indeks elementu macierzy." << endl;
+                return 0;
+            }
+            return dane[(wiersz-1)][(kolumna-1)];
+        }
+
+    void transponuj() {
         int** nowe_dane = new int*[kolumny];
         for (int i = 0; i < kolumny; i++) {
             nowe_dane[i] = new int[wiersze];
@@ -224,14 +116,7 @@ void macierz::transponuj() {
         kolumny = tmp;
     }
 
-
-
-// metoda do obliczania macierzy odwrotnej
-// metoda ta zwraca true jeśli dla danej macierzy
-//można znaleźć macierz odwrotną. Natomiast metoda
-//zwraca false jeśli nie można znaleźć macierzy
-//odwrotnej, czyli jeśli macierz jest osobliwa.
-    bool macierz::odwroc() {
+    bool odwroc() {
         // tworzymy wektory do przechowywania permutacji wierszy
         vector<int> p(wiersze);
         for (int i = 0; i < wiersze; i++) {
@@ -285,8 +170,186 @@ void macierz::transponuj() {
         return true;
     }
 
+    int wyznacznik() const {
+        // sprawdzamy, czy macierz jest kwadratowa
+        if (wiersze != kolumny) {
+            cerr << "Macierz nie jest kwadratowa." << endl;
+            return 0;
+        }
 
-void macierz::wypisz() {
+        // obliczamy wyznacznik metodą Laplace'a
+        int det = 1;
+        for (int i = 0; i < wiersze; i++) {
+            // szukamy największego elementu w kolumnie i
+            int max_wiersz = i;
+            for (int j = i+1; j < wiersze; j++) {
+                if (abs(dane[j][i]) > abs(dane[max_wiersz][i])) {
+                    max_wiersz = j;
+                }
+            }
+
+            // jeśli największy element jest równy 0, to wyznacznik jest równy 0
+            if (dane[max_wiersz][i] == 0) {
+                return 0;
+            }
+
+            // zamieniamy wiersze, jeśli trzeba
+            if (max_wiersz != i) {
+                det *= -1;
+                swap(dane[i], dane[max_wiersz]);
+            }
+
+            // eliminujemy elementy poniżej i
+            for (int j = i+1; j < wiersze; j++) {
+                int f = dane[j][i] / dane[i][i];
+                for (int k = i; k < wiersze; k++) {
+                    dane[j][k] -= f * dane[i][k];
+                }
+            }
+        }
+
+        // mnożymy elementy na przekątnej
+        for (int i = 0; i < wiersze; i++) {
+            det *= dane[i][i];
+        }
+
+        return det;
+    }
+
+    
+
+
+    macierz MacierzDopelnien() const {
+            if (wiersze != 3 || kolumny != 3) {
+                cerr << "Macierz nie jest 3x3." << endl;
+                return macierz(0,0);
+            }
+            macierz dopelnienia(3,3);
+            dopelnienia.dane[0][0] = (dane[1][1] * dane[2][2]) - (dane[2][1] * dane[1][2]);
+            dopelnienia.dane[0][1] = (dane[1][2] * dane[2][0]) - (dane[2][2] * dane[1][0]);
+            dopelnienia.dane[0][2] = (dane[1][0] * dane[2][1]) - (dane[2][0] * dane[1][1]);
+            dopelnienia.dane[1][0] = (dane[0][2] * dane[2][1]) - (dane[2][2] * dane[0][1]);
+            dopelnienia.dane[1][1] = (dane[0][0] * dane[2][2]) - (dane[2][0] * dane[0][2]);
+            dopelnienia.dane[1][2] = (dane[0][1] * dane[2][0]) - (dane[2][1] * dane[0][0]);
+            dopelnienia.dane[2][0] = (dane[0][1] * dane[1][2]) - (dane[1][1] * dane[0][2]);
+            dopelnienia.dane[2][1] = (dane[0][2] * dane[1][0]) - (dane[1][2] * dane[0][0]);
+            dopelnienia.dane[2][2] = (dane[0][0] * dane[1][1]) - (dane[1][0] * dane[0][1]);
+            return dopelnienia;
+        }
+       
+    // metoda do obliczania dopelnienia algebraicznego dla danego elementu macierzy
+    /*double DopelnienieAlgebraiczne(int wiersz, int kolumna) {
+        // Tworzymy macierz bez wiersza i kolumny danego elementu
+        int sub_wiersze = wiersze - 1;
+        int sub_kolumny = kolumny - 1;
+        macierz sub_macierz(sub_wiersze, sub_kolumny);
+        int x = 0, y = 0;
+        for (int i = 0; i < wiersze; i++) {
+            if (i == wiersz) continue;
+            y = 0;
+            for (int j = 0; j < kolumny; j++) {
+                if (j == kolumna) continue;
+                sub_macierz.dane[x][y] = dane[i][j];
+                y++;
+            }
+            x++;
+        }
+        // Obliczamy wyznacznik macierzy bez wiersza i kolumny danego elementu
+        double wyznacznik = sub_macierz.wyznacznik();
+        // Zwracamy dopelnienie algebraiczne dla danego elementu macierzy
+        return pow(-1, wiersz + kolumna) * wyznacznik;
+    }
+    */
+
+    /*macierz DopelnienieMacierzy() {
+        if (wiersze != kolumny) {
+            cerr << "Dopelnienie macierzy można obliczyć tylko dla macierzy kwadratowej." << endl;
+            return macierz(0,0);
+        }
+
+        macierz dopelnienie(wiersze, kolumny);
+        for (int i = 0; i < wiersze; i++) {
+            for (int j = 0; j < kolumny; j++) {
+                dopelnienie.dane[i][j] = DopelnienieAlgebraiczne(i, j);
+            }
+        }
+
+        return dopelnienie;
+    }
+    */
+
+    
+    void ImportujZPliku(const string &nazwaPliku) {
+        ifstream plik(nazwaPliku);
+        if (!plik.is_open()) {
+            cerr << "Nie udało się otworzyć pliku " << nazwaPliku << endl;
+            return;
+        }
+
+        for (int i = 0; i < wiersze; i++) {
+            for (int j = 0; j < kolumny; j++) {
+                plik >> dane[i][j];
+            }
+        }
+
+        plik.close();
+    }
+  
+    void ExportujDoPliku(const string &nazwaPliku) {
+        ofstream plik(nazwaPliku);
+        if (!plik.is_open()) {
+            cerr << "Nie udało się otworzyć pliku " << nazwaPliku << endl;
+            return;
+        }
+
+        for (int i = 0; i < wiersze; i++) {
+            for (int j = 0; j < kolumny; j++) {
+                plik << dane[i][j] << " ";
+            }
+            plik << endl;
+        }
+
+        plik.close();
+    }
+
+
+ // metoda do dodawania macierzy
+    macierz Dodaj(const macierz& druga) {
+        if (wiersze != druga.wiersze || kolumny != druga.kolumny) {
+            cerr << "Macierze mają różne rozmiary." << endl;
+            return macierz(0,0);
+        }
+
+        macierz wynik(wiersze, kolumny);
+        for (int i = 0; i < wiersze; i++) {
+            for (int j = 0; j < kolumny; j++) {
+                wynik.dane[i][j] = dane[i][j] + druga.dane[i][j];
+            }
+        }
+
+        return wynik;
+    }   
+
+ // metoda do odejmowania macierzy
+    macierz Odejmij(const macierz& druga) {
+        if (wiersze != druga.wiersze || kolumny != druga.kolumny) {
+        cerr << "Macierze mają różne rozmiary." << endl;
+        return macierz(0,0);
+        }
+    
+            macierz wynik(wiersze, kolumny);
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = 0; j < kolumny; j++) {
+            wynik.dane[i][j] = dane[i][j] - druga.dane[i][j];
+        }
+    }
+
+    return wynik;
+}
+
+
+
+void wypisz() {
     for (int i = 0; i < wiersze; i++) {
         for (int j = 0; j < kolumny; j++) {
             cout << dane[i][j] << " ";
@@ -296,137 +359,26 @@ void macierz::wypisz() {
 
 }
 
+
+
+
+private:
+    int** dane;
+    int wiersze;
+    int kolumny;
+};
+
+
+// metoda do obliczania macierzy odwrotnej
+// metoda ta zwraca true jeśli dla danej macierzy
+//można znaleźć macierz odwrotną. Natomiast metoda
+//zwraca false jeśli nie można znaleźć macierzy
+//odwrotnej, czyli jeśli macierz jest osobliwa.
+
+
+
 int main()
 {
-  
-    int wybor;
-    int liczbaMacierzy;
-    cout << "Ile macierzy chcesz utworzyc (minimum 2)?: ";
-    cin >> liczbaMacierzy;
-
-    if (liczbaMacierzy < 2) {
-        cout << "Musisz utworzyc conajmniej 2 macierze" << endl;
-        return 0;
-    }
-    vector<macierz> macierze;
-    for (int i = 0; i < liczbaMacierzy; i++) {
-        int wiersze, kolumny;
-        cout << "Podaj liczbe wierszy dla macierzy " << i + 1 << ": ";
-        cin >> wiersze;
-        cout << "Podaj liczbe kolumn dla macierzy " << i + 1 << ": ";
-        cin >> kolumny;
-        macierze.push_back(macierz(wiersze, kolumny));
-    }
-
-    while(true) {
-        cout << "Wybierz opcje:" << endl;
-        cout << "1. Wypisz macierze" << endl;
-        cout << "2. Transponuj macierze" << endl;
-        cout << "3. Odwroc macierze" << endl;
-        cout << "4. Oblicz wyznacznik macierzy" << endl;
-        cout << "5. Oblicz stopien macierzy" << endl;
-        cout << "6. Dodaj macierze" << endl;
-        cout << "7. Odejmij macierze" << endl;
-        cout << "8. Importuj dane z pliku" << endl;
-        cout << "9. Exportuj dane do pliku" << endl;
-        cout << "10. Wyjdz z programu" << endl;
-        cin >> wybor;
-
-        if (wybor == 1) {
-            for (int i = 0; i < liczbaMacierzy; i++) {
-                cout << "Macierz " << i + 1 << ":" << endl;
-                macierze[i].wypisz();
-                cout << endl;
-            }
-        } else if (wybor == 2) {
-            for (int i = 0; i < liczbaMacierzy; i++) {
-                cout << "Macierz " << i + 1 << " po transponowaniu:" << endl;
-                macierze[i].transponuj();
-                macierze[i].wypisz();
-                cout << endl;
-            }
-        } else if (wybor == 3) {
-            for (int i = 0; i < liczbaMacierzy; i++) {
-                if (macierze[i].odwroc()) {
-                    cout << "Macierz " << i + 1 << " po odwroceniu:" << endl;
-                    macierze[i].wypisz();
-                    cout << endl;
-                }
-               else {
-                    cout << "Macierz " << i + 1 << " jest nieodwracalna." << endl;
-}
-}
-} else if (wybor == 4) {
-for (int i = 0; i < liczbaMacierzy; i++) {
-cout << "Wyznacznik macierzy " << i + 1 << ": " << macierze[i].wyznacznik() << endl;
-}
-} else if (wybor == 5) {
-for (int i = 0; i < liczbaMacierzy; i++) {
-cout << "Stopien macierzy " << i + 1 << ": " << macierze[i].stopien() << endl;
-}
-} else if (wybor == 6) {
-int macierz1, macierz2;
-cout << "Wybierz pierwsza macierz do dodania (1-" << liczbaMacierzy << "): ";
-cin >> macierz1;
-cout << "Wybierz druga macierz do dodania (1-" << liczbaMacierzy << "): ";
-cin >> macierz2;
-if (macierz1 < 1 || macierz1 > liczbaMacierzy || macierz2 < 1 || macierz2 > liczbaMacierzy) {
-cout << "Nieprawidlowy wybor macierzy" << endl;
-continue;
-}
-macierz wynik = macierze[macierz1 - 1].Dodaj(macierze[macierz2 - 1]);
-cout << "Wynik dodawania:" << endl;
-wynik.wypisz();
-cout << endl;
-} else if (wybor == 7) {
-int macierz1, macierz2;
-cout << "Wybierz pierwsza macierz do odejmowania (1-" << liczbaMacierzy << "): ";
-cin >> macierz1;
-cout << "Wybierz druga macierz do odejmowania (1-" << liczbaMacierzy << "): ";
-cin >> macierz2;
-if (macierz1 < 1 || macierz1 > liczbaMacierzy || macierz2 < 1 || macierz2 > liczbaMacierzy) {
-cout << "Nieprawidlowy wybor macierzy" << endl;
-continue;
-}
-macierz wynik = macierze[macierz1 - 1].Odejmij(macierze[macierz2 - 1]);
-cout << "Wynik odejmowania:" << endl;
-wynik.wypisz();
-cout << endl;
-} else if (wybor == 8) {
-int macierz1;
-string nazwaPliku;
-cout << "Wybierz macierz, która ma zaimportować dane (1-" << liczbaMacierzy << "): ";
-cin >> macierz1;
-cout << "Podaj nazwę pliku do importu: ";
-cin >> nazwaPliku;
-if (macierz1 < 1 || macierz1 > liczbaMacierzy) {
-cout << "Nieprawidlowy wybor macierzy" << endl;
-continue;
-}
-macierze[macierz1 - 1].ImportujZPliku(nazwaPliku);
-cout << "Dane z pliku " << nazwaPliku << " zaimportowane do macierzy " << macierz1 << endl;
-} else if (wybor == 9) {
-            int macierz1;
-            string nazwaPliku;
-            cout << "Wybierz macierz, która ma zaimportować dane (1-" << liczbaMacierzy << "): ";
-            cin >> macierz1;
-            cout << "Podaj nazwę pliku do exportu (z rozszerzeniem .txt): ";
-            cin >> nazwaPliku;
-            if (macierz1 < 1 || macierz1 > liczbaMacierzy) {
-                cout << "Nieprawidlowy wybor macierzy" << endl;
-                continue;
-            }
-            if(nazwaPliku.find(".txt") == string::npos){
-                nazwaPliku += ".txt";
-            }
-            macierze[macierz1 - 1].ExportujDoPliku(nazwaPliku);
-            cout << "Dane z macierzy " << macierz1 << " zapisane do pliku " << nazwaPliku << endl;
-        } else if (wybor == 10) {
-break;
-} else {
-cout << "Nieprawidlowy wybor." << endl;
-}
-}
-
+   
     return 0;
 }
