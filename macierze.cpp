@@ -116,59 +116,9 @@ public:
         kolumny = tmp;
     }
 
-    bool odwroc() {
-        // tworzymy wektory do przechowywania permutacji wierszy
-        vector<int> p(wiersze);
-        for (int i = 0; i < wiersze; i++) {
-            p[i] = i;
-        }
-        // obliczamy rozkład LU
-        for (int i = 0; i < wiersze; i++) {
-            // szukamy pivotu
-            int pivot = i;
-            for (int j = i + 1; j < wiersze; j++) {
-                if (fabs(dane[p[j]][i]) > fabs(dane[p[pivot]][i])) {
-                    pivot = j;
-                }
-            }
-        // zamieniamy wiersze, jeśli pivot nie jest na swoim miejscu
-            if (pivot != i) {
-                swap(p[i], p[pivot]);
-            }
+  
 
-            // obliczamy elementy macierzy L i U
-            for (int j = i + 1; j < wiersze; j++) {
-                dane[p[j]][i] /= dane[p[i]][i];
-                for (int k = i + 1; k < wiersze; k++) {
-                    dane[p[j]][k] -= dane[p[j]][i] * dane[p[i]][k];
-                }
-            }
-        }
-        // tworzymy macierz odwrotną jako macierz jednostkową
-        macierz odwrotna(wiersze, kolumny);
-        for (int i = 0; i < wiersze; i++) {
-            odwrotna.dane[i][i] = 1;
-        }
-
-        // obliczamy macierz odwrotną za pomocą rozwiązywania układów równań
-        for (int i = wiersze - 1; i >= 0; i--) {
-            for (int j = i - 1; j >= 0; j--) {
-                for (int k = wiersze - 1; k >= i; k--) {
-                    odwrotna.dane[p[j]][k] -= dane[p[j]][i] * odwrotna.dane[p[i]][k];
-                }
-            }
-        }
-        // mnożymy macierz odwrotną przez elementy na przekątnej macierzy U
-        for (int i = 0; i < wiersze; i++) {
-            for (int j = 0; j < wiersze; j++) {
-                odwrotna.dane[i][j] /= dane[p[i]][i];
-            }
-        }
-
-        // zamieniamy macierze
-        *this = odwrotna;
-        return true;
-    }
+ 
 
     int wyznacznik() const {
         // sprawdzamy, czy macierz jest kwadratowa
@@ -236,7 +186,11 @@ public:
             dopelnienia.dane[2][2] = (dane[0][0] * dane[1][1]) - (dane[1][0] * dane[0][1]);
             return dopelnienia;
         }
-       
+
+
+    
+
+      
     // metoda do obliczania dopelnienia algebraicznego dla danego elementu macierzy
     /*double DopelnienieAlgebraiczne(int wiersz, int kolumna) {
         // Tworzymy macierz bez wiersza i kolumny danego elementu
@@ -357,6 +311,29 @@ void wypisz() {
         cout << endl;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
 }
 
 
@@ -380,5 +357,39 @@ private:
 int main()
 {
    
+    
+    // macierz m1(3,3);
+    // m1.wypisz();
+
+    // m1.transponuj(); //dobrze działa
+    // m1.wypisz();
+/////////////////////////////////////////
+
+    //  macierz m1(3,3);
+    //  m1.wypisz();
+
+    //  m1.odwroc();  // źle
+    //  m1.wypisz();
+//////////////////////////////////////////
+
+    //  macierz m1(3,3);
+    //  m1.wypisz();
+
+    //  m1.wyznacznik(); //źle
+    //  m1.wypisz();
+
+//////////////////////////////////////
+    //   macierz m1(3,3);
+    //   m1.wypisz();
+
+      
+    //   macierz m1dop(3,3);
+    //   m1dop = m1.MacierzDopelnien(); //działa
+    //   m1dop.wypisz();
+
+
+    // dorobić metodę obróć i wyznacznik
+
+
     return 0;
 }
