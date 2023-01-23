@@ -1,6 +1,7 @@
 #include<iostream>
 using namespace std;
 #include <cstdlib>
+#include <iomanip>
 #include <ctime>
 #include <cmath>
 #include <iomanip>
@@ -269,13 +270,19 @@ macierz MacierzOdwrotna() {
 void wypisz() {
     for (int i = 0; i < wiersze; i++) {
         for (int j = 0; j < kolumny; j++) {
-            cout << dane[i][j] << " ";
+            cout << setw(4) << dane[i][j];
+            if (j != kolumny-1) cout << " |";
         }
         cout << endl;
+        if (i != wiersze-1) {
+            for (int j = 0; j < kolumny; j++) {
+                cout << "------";              
+            }
+            cout << endl;
+        }
     }
-  
-
 }
+
 
 
 
@@ -300,91 +307,102 @@ int main()
   
 
     // drukujemy macierz
-    cout << "Macierz przed dodaniem elementu:" << endl;
+    cout << "\nMacierz przed dodaniem elementu:" << endl;
     m1.wypisz();
     _getch();
 
     // dodajemy element do macierzy
     m1.DodajElement(1, 1, 10);
-    cout << "Macierz po dodaniu elementu:" << endl;
+    cout << "\nMacierz po dodaniu elementu 10 na pozycji (1,1)" << endl;
     m1.wypisz();
     _getch();
 
     // usuwamy element z macierzy
     m1.UsunElement(1, 1);
-    cout << "Macierz po usunięciu elementu:" << endl;
+    cout << "\nMacierz po usunieciu elementu na pozycji (1,1)" << endl;
     m1.wypisz();
     _getch();
 
     // testujemy metodę ZwrocElement()
     int element = m1.ZwrocElement(1, 1);
-    cout << "Element (1,1) macierzy: " << element << endl;
+    cout << "\nElement (1,1) macierzy: " << element << endl;
     _getch();
 
     // transponujemy macierz
     m1.transponuj();
-    cout << "Macierz po transponowaniu:" << endl;
+    cout << "\nMacierz po transponowaniu:" << endl;
     m1.wypisz();
     _getch();
+
     //Wyznacznik laplace
-    cout<<"Wyznacznik macierzy: " << m1.WyznacznikLaplace()<< endl;
+    cout<<"\nWyznacznik macierzy: " << endl;
+    double wyznacznik = m1.WyznacznikLaplace();
+    cout << wyznacznik << endl;
     _getch();
 
 //////////////////////////////////////////////
 
     //Macierz Dopelnien
-    cout<<"Macierz Dopelnien: " << endl;
-    m1.MacierzDopelnien();
-    m1.wypisz();
+    cout<<"\nMacierz Dopelnien: " << endl;
+    macierz dopelnienia = m1.MacierzDopelnien();
+    dopelnienia.wypisz();
     _getch();
 
 
     //Macierz Odwrotna
-    cout<<"Macierz Odwrotna: " << endl;
+    cout<<"\nMacierz Odwrotna: nie działa " << endl;
     m1.MacierzOdwrotna();
     _getch();
 
      //Export do pliku
-     m1.ExportujDoPliku();
+     m1.ExportujDoPliku("gotowiec.txt");
+     cout << "\nZostal utworzony plik tekstowy o nazwie gotowiec.txt zawierajacy dane z macierzy m1" << endl;
      _getch();
 
 
     // //Import z pliku
-    // m1.ImportujZPliku();
-    // _getch();
+    cout << "\nTworzymy nowa macierz m3 do ktorej nastepnie zaimportujemy dane z pliku" << endl;
+    macierz m3(3,3);
+    cout << "\nW macierzy m3 znajduja sie aktualnie takie dane"; 
+    m3.wypisz();
+    cout << "\nImportujemy z pliku gotowiec.txt dane, ktore wczesniej eksportowalismy z macierzy m1" << endl;
+    m3.ImportujZPliku("gotowiec.txt");
+    cout << "\nAktualne dane w macierzy m3 po zaimportowaniu z pliku gotowiec.txt" << endl;
+    m3.wypisz();
+     _getch();
 
     //Dodawanie macierzy
-    cout<<"Dodawanie macierzy: " << endl;
+    cout<<"\nDodawanie macierzy: " << endl;
    
 
-    cout << "Macierz m1" << endl;
+    cout << "\nMacierz m1" << endl;
     m1.wypisz();
 
-    cout << "Macierz m2" << endl;
+    cout << "\nMacierz m2" << endl;
     m2.wypisz();
 
     macierz wynikdodawania(3,3);
     wynikdodawania =  m1.Dodaj(m2);
 
-    cout << "wynik" << endl;
+    cout << "\nwynik" << endl;
     wynikdodawania.wypisz();
 
     
     _getch();
     //Odejmowanie macierzy
-    cout<<"Odejmowanie macierzy: " << endl;
+    cout<<"\nOdejmowanie macierzy: " << endl;
 
-    cout << "Macierz m1" << endl;
+    cout << "\nMacierz m1" << endl;
     m1.wypisz();
 
-    cout << "Macierz m2" << endl;
+    cout << "\nMacierz m2" << endl;
     m2.wypisz();
 
 
     macierz wynikodejmowania(3,3);
     wynikodejmowania = m1.Odejmij(m2);
    
-    cout << "wynik" << endl;
+    cout << "\nwynik" << endl;
     wynikodejmowania.wypisz();
 
      _getch();
