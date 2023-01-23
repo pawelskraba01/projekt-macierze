@@ -7,6 +7,7 @@ using namespace std;
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <conio.h>
 
 
 
@@ -167,50 +168,32 @@ double WyznacznikLaplace() {
             return dopelnienia;
         }
 
-
+macierz MacierzOdwrotna() {
+    if (wiersze != 3 || kolumny != 3) {
+        cerr << "Macierz musi być 3x3, aby obliczyć macierz odwrotną." << endl;
+        return macierz(0, 0);
+    }
+    double det = WyznacznikLaplace();
+    if (det == 0) {
+        cerr << "Macierz odwrotna nie istnieje dla macierzy osobliwej." << endl;
+        return macierz(0, 0);
+    }
+    macierz odwrotna(3, 3);
+    odwrotna.dane[0][0] = (dane[1][1] * dane[2][2] - dane[1][2] * dane[2][1]) / det;
+    odwrotna.dane[0][1] = (dane[0][2] * dane[2][1] - dane[0][1] * dane[2][2]) / det;
+    odwrotna.dane[0][2] = (dane[0][1] * dane[1][2] - dane[0][2] * dane[1][1]) / det;
+    odwrotna.dane[1][0] = (dane[1][2] * dane[2][0] - dane[1][0] * dane[2][2]) / det;
+    odwrotna.dane[1][1] = (dane[0][0] * dane[2][2] - dane[0][2] * dane[2][0]) / det;
+    odwrotna.dane[1][2] = (dane[0][2] * dane[1][0] - dane[0][0] * dane[1][2]) / det;
+    odwrotna.dane[2][0] = (dane[1][0] * dane[2][1] - dane[1][1] * dane[2][0]) / det;
+    odwrotna.dane[2][1] = (dane[0][1] * dane[2][0] - dane[0][0] * dane[2][1]) / det;
+    odwrotna.dane[2][2] = (dane[0][0] * dane[1][1] - dane[0][1] * dane[1][0]) / det;
+    return odwrotna;
+}
     
 
       
-    // metoda do obliczania dopelnienia algebraicznego dla danego elementu macierzy
-    /*double DopelnienieAlgebraiczne(int wiersz, int kolumna) {
-        // Tworzymy macierz bez wiersza i kolumny danego elementu
-        int sub_wiersze = wiersze - 1;
-        int sub_kolumny = kolumny - 1;
-        macierz sub_macierz(sub_wiersze, sub_kolumny);
-        int x = 0, y = 0;
-        for (int i = 0; i < wiersze; i++) {
-            if (i == wiersz) continue;
-            y = 0;
-            for (int j = 0; j < kolumny; j++) {
-                if (j == kolumna) continue;
-                sub_macierz.dane[x][y] = dane[i][j];
-                y++;
-            }
-            x++;
-        }
-        // Obliczamy wyznacznik macierzy bez wiersza i kolumny danego elementu
-        double wyznacznik = sub_macierz.wyznacznik();
-        // Zwracamy dopelnienie algebraiczne dla danego elementu macierzy
-        return pow(-1, wiersz + kolumna) * wyznacznik;
-    }
-    */
-
-    /*macierz DopelnienieMacierzy() {
-        if (wiersze != kolumny) {
-            cerr << "Dopelnienie macierzy można obliczyć tylko dla macierzy kwadratowej." << endl;
-            return macierz(0,0);
-        }
-
-        macierz dopelnienie(wiersze, kolumny);
-        for (int i = 0; i < wiersze; i++) {
-            for (int j = 0; j < kolumny; j++) {
-                dopelnienie.dane[i][j] = DopelnienieAlgebraiczne(i, j);
-            }
-        }
-
-        return dopelnienie;
-    }
-    */
+   
 
     
     void ImportujZPliku(const string &nazwaPliku) {
@@ -290,29 +273,7 @@ void wypisz() {
         }
         cout << endl;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
+  
 
 }
 
@@ -326,53 +287,108 @@ private:
 };
 
 
-// metoda do obliczania macierzy odwrotnej
-// metoda ta zwraca true jeśli dla danej macierzy
-//można znaleźć macierz odwrotną. Natomiast metoda
-//zwraca false jeśli nie można znaleźć macierzy
-//odwrotnej, czyli jeśli macierz jest osobliwa.
-
-
 
 int main()
 {
    
+  
+    // tworzymy macierz o rozmiarze 3x3
+
+    macierz m1(3, 3);
+    macierz m2(3, 3);
+
+  
+
+    // drukujemy macierz
+    cout << "Macierz przed dodaniem elementu:" << endl;
+    m1.wypisz();
+    _getch();
+
+    // dodajemy element do macierzy
+    m1.DodajElement(1, 1, 10);
+    cout << "Macierz po dodaniu elementu:" << endl;
+    m1.wypisz();
+    _getch();
+
+    // usuwamy element z macierzy
+    m1.UsunElement(1, 1);
+    cout << "Macierz po usunięciu elementu:" << endl;
+    m1.wypisz();
+    _getch();
+
+    // testujemy metodę ZwrocElement()
+    int element = m1.ZwrocElement(1, 1);
+    cout << "Element (1,1) macierzy: " << element << endl;
+    _getch();
+
+    // transponujemy macierz
+    m1.transponuj();
+    cout << "Macierz po transponowaniu:" << endl;
+    m1.wypisz();
+    _getch();
+    //Wyznacznik laplace
+    cout<<"Wyznacznik macierzy: " << m1.WyznacznikLaplace()<< endl;
+    _getch();
+
+//////////////////////////////////////////////
+
+    //Macierz Dopelnien
+    cout<<"Macierz Dopelnien: " << endl;
+    m1.MacierzDopelnien();
+    m1.wypisz();
+    _getch();
+
+
+    //Macierz Odwrotna
+    cout<<"Macierz Odwrotna: " << endl;
+    m1.MacierzOdwrotna();
+    _getch();
+
+     //Export do pliku
+     m1.ExportujDoPliku();
+     _getch();
+
+
+    // //Import z pliku
+    // m1.ImportujZPliku();
+    // _getch();
+
+    //Dodawanie macierzy
+    cout<<"Dodawanie macierzy: " << endl;
+   
+
+    cout << "Macierz m1" << endl;
+    m1.wypisz();
+
+    cout << "Macierz m2" << endl;
+    m2.wypisz();
+
+    macierz wynikdodawania(3,3);
+    wynikdodawania =  m1.Dodaj(m2);
+
+    cout << "wynik" << endl;
+    wynikdodawania.wypisz();
+
     
-    // macierz m1(3,3);
-    // m1.wypisz();
+    _getch();
+    //Odejmowanie macierzy
+    cout<<"Odejmowanie macierzy: " << endl;
 
-    // m1.transponuj(); //dobrze działa
-    // m1.wypisz();
-/////////////////////////////////////////
+    cout << "Macierz m1" << endl;
+    m1.wypisz();
 
-    //  macierz m1(3,3);
-    //  m1.wypisz();
-
-    //  m1.odwroc();  // źle
-    //  m1.wypisz();
-//////////////////////////////////////////
-
-      macierz m1(3,3);
-      m1.wypisz();
+    cout << "Macierz m2" << endl;
+    m2.wypisz();
 
 
+    macierz wynikodejmowania(3,3);
+    wynikodejmowania = m1.Odejmij(m2);
+   
+    cout << "wynik" << endl;
+    wynikodejmowania.wypisz();
 
-     int wyznaczniklp =  m1.WyznacznikLaplace(); //źle
-     
-     cout << wyznaczniklp << endl;
+     _getch();
 
-//////////////////////////////////////
-    //   macierz m1(3,3);
-    //   m1.wypisz();
-
-      
-    //   macierz m1dop(3,3);
-    //   m1dop = m1.MacierzDopelnien(); //działa
-    //   m1dop.wypisz();
-
-
-    // dorobić metodę obróć i wyznacznik
-
-
+   
     return 0;
 }
