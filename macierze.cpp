@@ -20,9 +20,9 @@ public:
     // tworzymy macierz o podanych wymiarach
     this->wiersze = wiersze;
     this->kolumny = kolumny;
-    dane = new int*[wiersze];
+    dane = new double*[wiersze];
     for (int i = 0; i < wiersze; i++) {
-        dane[i] = new int[kolumny];
+        dane[i] = new double[kolumny];
     }
 
     // ustawiamy seed generatora liczb pseudolosowych
@@ -46,9 +46,9 @@ public:
         cerr << "Nieprawidłowy indeks elementu macierzy." << endl;
         return;
     }
-    int** temp = new int*[wiersze];
+    double** temp = new double*[wiersze];
     for(int i = 0; i<wiersze; i++)
-        temp[i] = new int[kolumny];
+        temp[i] = new double[kolumny];
 
     for(int i = 0; i<wiersze; i++)
         for(int j = 0; j<kolumny; j++)
@@ -70,9 +70,9 @@ public:
         cerr << "Nieprawidłowy indeks elementu macierzy." << endl;
         return;
     }
-    int** temp = new int*[wiersze];
+    double** temp = new double*[wiersze];
     for(int i = 0; i < wiersze; i++)
-        temp[i] = new int[kolumny];
+        temp[i] = new double[kolumny];
 
     for(int i = 0; i < wiersze; i++)
         for(int j = 0; j < kolumny; j++)
@@ -97,9 +97,9 @@ public:
         }
 
     void transponuj() {
-        int** nowe_dane = new int*[kolumny];
+        double** nowe_dane = new double*[kolumny];
         for (int i = 0; i < kolumny; i++) {
-            nowe_dane[i] = new int[wiersze];
+            nowe_dane[i] = new double[wiersze];
         }
 
         for (int i = 0; i < wiersze; i++) {
@@ -151,6 +151,9 @@ double WyznacznikLaplace() {
     
 
 
+    
+
+
     macierz MacierzDopelnien() const {
             if (wiersze != 3 || kolumny != 3) {
                 cerr << "Macierz nie jest 3x3." << endl;
@@ -169,28 +172,7 @@ double WyznacznikLaplace() {
             return dopelnienia;
         }
 
-macierz MacierzOdwrotna() {
-    if (wiersze != 3 || kolumny != 3) {
-        cerr << "Macierz musi być 3x3, aby obliczyć macierz odwrotną." << endl;
-        return macierz(0, 0);
-    }
-    double det = WyznacznikLaplace();
-    if (det == 0) {
-        cerr << "Macierz odwrotna nie istnieje dla macierzy osobliwej." << endl;
-        return macierz(0, 0);
-    }
-    macierz odwrotna(3, 3);
-    odwrotna.dane[0][0] = (dane[1][1] * dane[2][2] - dane[1][2] * dane[2][1]) / det;
-    odwrotna.dane[0][1] = (dane[0][2] * dane[2][1] - dane[0][1] * dane[2][2]) / det;
-    odwrotna.dane[0][2] = (dane[0][1] * dane[1][2] - dane[0][2] * dane[1][1]) / det;
-    odwrotna.dane[1][0] = (dane[1][2] * dane[2][0] - dane[1][0] * dane[2][2]) / det;
-    odwrotna.dane[1][1] = (dane[0][0] * dane[2][2] - dane[0][2] * dane[2][0]) / det;
-    odwrotna.dane[1][2] = (dane[0][2] * dane[1][0] - dane[0][0] * dane[1][2]) / det;
-    odwrotna.dane[2][0] = (dane[1][0] * dane[2][1] - dane[1][1] * dane[2][0]) / det;
-    odwrotna.dane[2][1] = (dane[0][1] * dane[2][0] - dane[0][0] * dane[2][1]) / det;
-    odwrotna.dane[2][2] = (dane[0][0] * dane[1][1] - dane[0][1] * dane[1][0]) / det;
-    return odwrotna;
-}
+
     
 
       
@@ -267,9 +249,56 @@ macierz MacierzOdwrotna() {
 
 
 
+
+
+macierz WyznaczMacierzOdwrotna() {
+    if (wiersze != 3 || kolumny != 3) {
+        cerr << "Macierz odwrotna może być wyznaczona tylko dla macierzy 3x3." << endl;
+        return macierz(1,1);
+    }
+    // obliczanie wartości detA
+    double detA = dane[0][0] * (dane[1][1] * dane[2][2] - dane[2][1] * dane[1][2]) -
+               dane[0][1] * (dane[1][0] * dane[2][2] - dane[1][2] * dane[2][0]) +
+               dane[0][2] * (dane[1][0] * dane[2][1] - dane[1][1] * dane[2][0]);
+    if (detA == 0) {
+        cerr << "Macierz odwrotna nie istnieje dla macierzy o wyznaczniku równym 0." << endl;
+        return macierz(1,1);
+    }
+    // tworzenie macierzy odwrotnej
+    macierz A_odwrotna(3, 3);
+    A_odwrotna.dane[0][0] = (dane[1][1] * dane[2][2] - dane[2][1] * dane[1][2]) / detA;
+    A_odwrotna.dane[0][1] = -(dane[0][1] * dane[2][2] - dane[0][2] * dane[2][1]) / detA;
+    A_odwrotna.dane[0][2] = (dane[0][1] * dane[1][2] - dane[0][2] * dane[1][1]) / detA;
+    A_odwrotna.dane[1][0] = -(dane[1][0] * dane[2][2] - dane[1][2] * dane[2][0]) / detA;
+    A_odwrotna.dane[1][1] = (dane[0][0] * dane[2][2] - dane[0][2] * dane[2][0]) / detA;
+    A_odwrotna.dane[1][2] = -(dane[0][0] * dane[1][2] - dane[1][0] * dane[0][2]) / detA;
+    A_odwrotna.dane[2][0] = (dane[1][0] * dane[2][1] - dane[2][0] * dane[1][1]) / detA;
+    A_odwrotna.dane[2][1] = -(dane[0][0] * dane[2][1] - dane[2][0] * dane[0][1]) / detA;
+    A_odwrotna.dane[2][2] = (dane[0][0] * dane[1][1] - dane[1][0] * dane[0][1]) / detA;
+    
+    //  for(int i = 0; i < 3; i++) {
+    //      for(int j = 0; j < 3; j++) {
+    // //         cout << setprecision(2) << fixed << A_odwrotna.dane[i][j] << " ";
+    //             if(floor(A_odwrotna.dane[i][j]) == A_odwrotna.dane[i][j])
+    //         printf("%.0f ", A_odwrotna.dane[i][j]);
+    //     else
+    //         printf("%.2f ", A_odwrotna.dane[i][j]);
+    //      }
+    //      cout << endl;
+    //  }
+    
+    return A_odwrotna;
+    }
+    
+
+
+
+
+
 void wypisz() {
     for (int i = 0; i < wiersze; i++) {
         for (int j = 0; j < kolumny; j++) {
+            cout << fixed << setprecision(2);
             cout << setw(4) << dane[i][j];
             if (j != kolumny-1) cout << " |";
         }
@@ -288,7 +317,7 @@ void wypisz() {
 
 
 private:
-    int** dane;
+    double** dane;
     int wiersze;
     int kolumny;
 };
@@ -350,8 +379,11 @@ int main()
 
 
     //Macierz Odwrotna
-    cout<<"\nMacierz Odwrotna: nie działa " << endl;
-    m1.MacierzOdwrotna();
+    cout<<"\nMacierz Odwrotna dla macierzy m1 " << endl;
+    m1.wypisz();
+    macierz modwrotna(3,3);
+    modwrotna = m1.WyznaczMacierzOdwrotna();
+    modwrotna.wypisz();
     _getch();
 
      //Export do pliku
