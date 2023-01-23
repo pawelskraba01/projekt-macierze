@@ -120,52 +120,32 @@ public:
 
  
 
-    int wyznacznik() const {
-        // sprawdzamy, czy macierz jest kwadratowa
-        if (wiersze != kolumny) {
-            cerr << "Macierz nie jest kwadratowa." << endl;
-            return 0;
-        }
 
-        // obliczamy wyznacznik metodą Laplace'a
-        int det = 1;
-        for (int i = 0; i < wiersze; i++) {
-            // szukamy największego elementu w kolumnie i
-            int max_wiersz = i;
-            for (int j = i+1; j < wiersze; j++) {
-                if (abs(dane[j][i]) > abs(dane[max_wiersz][i])) {
-                    max_wiersz = j;
-                }
-            }
-
-            // jeśli największy element jest równy 0, to wyznacznik jest równy 0
-            if (dane[max_wiersz][i] == 0) {
-                return 0;
-            }
-
-            // zamieniamy wiersze, jeśli trzeba
-            if (max_wiersz != i) {
-                det *= -1;
-                swap(dane[i], dane[max_wiersz]);
-            }
-
-            // eliminujemy elementy poniżej i
-            for (int j = i+1; j < wiersze; j++) {
-                int f = dane[j][i] / dane[i][i];
-                for (int k = i; k < wiersze; k++) {
-                    dane[j][k] -= f * dane[i][k];
-                }
-            }
-        }
-
-        // mnożymy elementy na przekątnej
-        for (int i = 0; i < wiersze; i++) {
-            det *= dane[i][i];
-        }
-
-        return det;
+       
+double WyznacznikLaplace() {
+    if (wiersze != kolumny) {
+        cerr << "Macierz musi być kwadratowa, aby obliczyć wyznacznik." << endl;
+        return 0;
     }
 
+    double det = 0;
+    if (wiersze == 1)
+        return dane[0][0];
+    if (wiersze == 2)
+        return dane[0][0] * dane[1][1] - dane[0][1] * dane[1][0];
+
+    for (int i = 0; i < wiersze; i++) {
+        int mnoznik = pow(-1, i);
+        macierz temp(wiersze - 1, kolumny - 1);
+        for (int j = 0; j < wiersze - 1; j++) {
+            for (int k = 0; k < kolumny - 1; k++) {
+                temp.dane[j][k] = dane[j >= i ? j + 1 : j][k + 1];
+            }
+        }
+        det += mnoznik * dane[i][0] * temp.WyznacznikLaplace();
+    }
+    return det;
+}
     
 
 
@@ -372,11 +352,14 @@ int main()
     //  m1.wypisz();
 //////////////////////////////////////////
 
-    //  macierz m1(3,3);
-    //  m1.wypisz();
+      macierz m1(3,3);
+      m1.wypisz();
 
-    //  m1.wyznacznik(); //źle
-    //  m1.wypisz();
+
+
+     int wyznaczniklp =  m1.WyznacznikLaplace(); //źle
+     
+     cout << wyznaczniklp << endl;
 
 //////////////////////////////////////
     //   macierz m1(3,3);
