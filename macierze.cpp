@@ -96,27 +96,27 @@ public:
             return dane[(wiersz-1)][(kolumna-1)];
         }
 
-    void transponuj() {
-        double** nowe_dane = new double*[kolumny];
-        for (int i = 0; i < kolumny; i++) {
-            nowe_dane[i] = new double[wiersze];
-        }
-
-        for (int i = 0; i < wiersze; i++) {
-            for (int j = 0; j < kolumny; j++) {
-                nowe_dane[j][i] = dane[i][j];
-            }
-        }
-
-        // zamieniamy wskazania na dane
-        delete[] dane;
-        dane = nowe_dane;
-
-        // zamieniamy liczbę wierszy i kolumn
-        int tmp = wiersze;
-        wiersze = kolumny;
-        kolumny = tmp;
+    void Transponuj() {
+    double** temp = new double*[kolumny];
+    for (int i = 0; i < kolumny; i++) {
+        temp[i] = new double[wiersze];
     }
+
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = 0; j < kolumny; j++) {
+            temp[j][i] = dane[i][j];
+        }
+    }
+
+    for (int i = 0; i < wiersze; i++) {
+        delete[] dane[i];
+    }
+    delete[] dane;
+    dane = temp;
+    int temp1 = wiersze;
+    wiersze = kolumny;
+    kolumny = temp1;
+}
 
   
 
@@ -298,8 +298,10 @@ macierz WyznaczMacierzOdwrotna() {
 void wypisz() {
     for (int i = 0; i < wiersze; i++) {
         for (int j = 0; j < kolumny; j++) {
-            cout << fixed << setprecision(2);
-            cout << setw(4) << dane[i][j];
+            if(floor(dane[i][j]) == dane[i][j])
+                cout << setw(4) << dane[i][j];
+            else
+                cout << fixed << setprecision(2) << setw(4) << dane[i][j];
             if (j != kolumny-1) cout << " |";
         }
         cout << endl;
@@ -336,75 +338,74 @@ int main()
   
 
     // drukujemy macierz
-    cout << "\nMacierz przed dodaniem elementu:" << endl;
+    cout << "\n1.Macierz przed dodaniem elementu:\n" << endl;
     m1.wypisz();
     _getch();
 
     // dodajemy element do macierzy
     m1.DodajElement(1, 1, 10);
-    cout << "\nMacierz po dodaniu elementu 10 na pozycji (1,1)" << endl;
+    cout << "\n\n2.Macierz po dodaniu elementu 10 na pozycji (1,1)\n" << endl;
     m1.wypisz();
     _getch();
 
     // usuwamy element z macierzy
     m1.UsunElement(1, 1);
-    cout << "\nMacierz po usunieciu elementu na pozycji (1,1)" << endl;
+    cout << "\n\n3.Macierz po usunieciu elementu na pozycji (1,1)\n" << endl;
     m1.wypisz();
     _getch();
 
     // testujemy metodę ZwrocElement()
-    int element = m1.ZwrocElement(1, 1);
-    cout << "\nElement (1,1) macierzy: " << element << endl;
+    int element = m1.ZwrocElement(2, 2);
+    cout << "\n\n4.Element (2,2) macierzy: " << element << endl;
     _getch();
 
     // transponujemy macierz
-    m1.transponuj();
-    cout << "\nMacierz po transponowaniu:" << endl;
+    m1.Transponuj();
+    cout << "\n\n5.Macierz po transponowaniu:\n" << endl;
     m1.wypisz();
     _getch();
 
     //Wyznacznik laplace
-    cout<<"\nWyznacznik macierzy: " << endl;
+    cout<<"\n\n6.Wyznacznik macierzy:" << endl;
     double wyznacznik = m1.WyznacznikLaplace();
     cout << wyznacznik << endl;
     _getch();
 
-//////////////////////////////////////////////
-
     //Macierz Dopelnien
-    cout<<"\nMacierz Dopelnien: " << endl;
+    cout<<"\n\n7.Macierz Dopelnien:\n" << endl;
     macierz dopelnienia = m1.MacierzDopelnien();
     dopelnienia.wypisz();
     _getch();
 
 
     //Macierz Odwrotna
-    cout<<"\nMacierz Odwrotna dla macierzy m1 " << endl;
+    cout<<"\n\n8.Macierz Odwrotna dla macierzy m1\n" << endl;
     m1.wypisz();
     macierz modwrotna(3,3);
     modwrotna = m1.WyznaczMacierzOdwrotna();
+    cout << "\nwynosi\n" << endl;
     modwrotna.wypisz();
     _getch();
 
      //Export do pliku
      m1.ExportujDoPliku("gotowiec.txt");
-     cout << "\nZostal utworzony plik tekstowy o nazwie gotowiec.txt zawierajacy dane z macierzy m1" << endl;
+     cout << "\n\n9.Zostal utworzony plik tekstowy o nazwie gotowiec.txt zawierajacy dane z macierzy m1" << endl;
      _getch();
 
 
     // //Import z pliku
-    cout << "\nTworzymy nowa macierz m3 do ktorej nastepnie zaimportujemy dane z pliku" << endl;
+    cout << "\n\n10.Tworzymy nowa macierz m3 do ktorej nastepnie zaimportujemy dane z pliku" << endl;
     macierz m3(3,3);
-    cout << "\nW macierzy m3 znajduja sie aktualnie takie dane"; 
+    cout << "\nW macierzy m3 znajduja sie aktualnie takie dane\n\n"; 
     m3.wypisz();
     cout << "\nImportujemy z pliku gotowiec.txt dane, ktore wczesniej eksportowalismy z macierzy m1" << endl;
     m3.ImportujZPliku("gotowiec.txt");
-    cout << "\nAktualne dane w macierzy m3 po zaimportowaniu z pliku gotowiec.txt" << endl;
+    cout << "\nAktualne dane w macierzy m3 po zaimportowaniu z pliku gotowiec.txt\n" << endl;
     m3.wypisz();
      _getch();
 
     //Dodawanie macierzy
-    cout<<"\nDodawanie macierzy: " << endl;
+    cout<<"\n\n11.Dodawanie macierzy: " << endl;
    
 
     cout << "\nMacierz m1" << endl;
@@ -422,7 +423,7 @@ int main()
     
     _getch();
     //Odejmowanie macierzy
-    cout<<"\nOdejmowanie macierzy: " << endl;
+    cout<<"\n\n12.Odejmowanie macierzy: " << endl;
 
     cout << "\nMacierz m1" << endl;
     m1.wypisz();
@@ -439,6 +440,5 @@ int main()
 
      _getch();
 
-   
     return 0;
 }
